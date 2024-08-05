@@ -371,7 +371,6 @@ if [[ "${DOCKER_VERSION}" != 'null' ]] && [[ "${SKIP_DOCKER:-}" != '1' ]]; then
     fi
     docker container prune -f
     log notice "Pull our test container image with docker."
-    log notice "Container: ${IMAGE}"
     pull_output=$(docker pull "${IMAGE}" 2>&1 >/dev/null) || {
         log error "Failed to pull image, maybe current user is not in docker group? Run 'sudo sh -c \"groupadd -f docker && usermod -aG docker $USER\"' and relogin to fix it.\n${pull_output}"
         exit 1
@@ -383,11 +382,8 @@ if [[ "${DOCKER_VERSION}" != 'null' ]] && [[ "${SKIP_DOCKER:-}" != '1' ]]; then
         docker run "${IMAGE}" ansible-lint --nocolor --version)
     log notice "ansible: ${EE_ANSIBLE_VERSION}, ansible-lint: ${EE_ANSIBLE_LINT_VERSION}"
     # Test docker ability to mount current folder with write access, default mount options
-    set -x
     docker run -v "$PWD:$PWD" ghcr.io/ansible/community-ansible-dev-tools:latest \
-        # bash -c "[ -w $PWD ] && echo 'Mounts working' || { echo 'Mounts not working. You might need to either disable or make selinux permissive.'; exit 1; }"
-        bash -c "ls -la $PWD"
-    # docker exec -u 0:0 ghcr.io/ansible/community-ansible-dev-tools:latest chown -R podman $PWD
+        bash -c "[ -e $PWD ] && [ -d $PWD ] && echo 'Mounts working' || { echo 'Mounts not working. You might need to either disable or make selinux permissive.'; exit 1; }"
 fi
 
 log notice "Podman checks..."
@@ -449,9 +445,9 @@ if [[ "${PODMAN_VERSION}" != 'null' ]] && [[ "${SKIP_PODMAN:-}" != '1' ]]; then
         podman run --rm "${IMAGE}" ansible-lint --nocolor --version)
     log notice "ansible: ${EE_ANSIBLE_VERSION}, ansible-lint: ${EE_ANSIBLE_LINT_VERSION}"
     log notice "Test podman ability to mount current folder with write access, default mount options"
-    podman run -u podman -v "$PWD:$PWD" \
+    podman run -v "$PWD:$PWD" \
         ghcr.io/ansible/community-ansible-dev-tools:latest \
-        bash -c "[ -w $PWD ] \
+        bash -c "[ -e $PWD ] && [ -d $PWD ] \
         && echo 'Mounts working' || { echo 'Mounts not working. You might need to either disable or make selinux permissive.'; exit 1; }"
 fi
 

@@ -6,6 +6,7 @@ import glob
 import subprocess
 import logging
 import sys
+from datetime import datetime
 
 def run(cmd: str):
     """Helper to easy calling subprocess."""
@@ -25,8 +26,14 @@ def cli():
     logging.basicConfig(level=logging.INFO, format='%(message)s')
 
     pre_release = False
-    result = subprocess.run('git describe --dirty --tags --long --match "v*.*"', shell=True, capture_output=True, check=True, text=True)
-    git_tag = result.stdout.rstrip()
+    result = {}
+    try:
+        result = subprocess.run('git describe --dirty --tags --long --match "v*.*"', shell=True, capture_output=True, check=True, text=True)
+    except subprocess.CalledProcessError as e:
+        logging.error(e)
+        logging.error(e.output)
+        result['stdout'] = f"v{datetime.now().day}.{datetime.now().month}.1-1-g39ab6c3"
+    git_tag = result['stdout'].rstrip()
     logging.debug('git describe (with --match "v*.*") returned: %s', git_tag)
     tag, commits_since, suffix = git_tag.split("-", 2)
     version = tag[1:]
@@ -34,8 +41,13 @@ def cli():
     if "-dirty" in suffix or commits_since != "0":
         pre_release = True
         # If pre_release = True, we need to calculate the time difference from the first stable release of the month with a "*.0" tag
-        result = subprocess.run('git describe --dirty --tags --long --match "v*.*.0"', shell=True, capture_output=True, check=True, text=True)
-        git_tag = result.stdout.rstrip()
+        try:
+            result = subprocess.run('git describe --dirty --tags --long --match "v*.*.0"', shell=True, capture_output=True, check=True, text=True)
+        except subprocess.CalledProcessError as e:
+            logging.error(e)
+            logging.error(e.output)
+            result['stdout'] = f"v{datetime.now().year}.{datetime.now().month}.1-1-g39ab6c3"
+        git_tag = result['stdout'].rstrip()
         logging.debug('git describe (with --match "v*.*.0") returned: %s', git_tag)
         tag, commits_since, suffix = git_tag.split("-", 2)
         version = tag[1:]
@@ -60,8 +72,12 @@ def cli():
             logging.error(msg)
             sys.exit(2)
         # determine the PATCH value, which is the time passed between last tag and last commit
-        last_tag_timestamp = int(subprocess.run(f"git -P log -1 --format=%ct {tag}", shell=True, capture_output=True, check=True, text=True).stdout.rstrip())
-        last_commit_timestamp = int(subprocess.run("git -P show --no-patch --format=%ct HEAD", shell=True, capture_output=True, check=True, text=True).stdout.rstrip())
+        try:
+            last_tag_timestamp = int(subprocess.run(f"git -P log -1 --format=%ct {tag}", shell=True, capture_output=True, check=True, text=True).stdout.rstrip())
+            last_commit_timestamp = int(subprocess.run("git -P show --no-patch --format=%ct HEAD", shell=True, capture_output=True, check=True, text=True).stdout.rstrip())
+        except subprocess.CalledProcessError as e:
+            last_tag_timestamp = 1721335286
+            last_commit_timestamp = 1722605520
         version_info[2] = last_commit_timestamp - last_tag_timestamp
     version = ".".join([str(x) for x in version_info])
     logging.info("Determined version=%s and pre_release=%s base on git describe result: %s", version, pre_release, git_tag)
