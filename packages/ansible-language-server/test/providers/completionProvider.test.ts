@@ -254,6 +254,11 @@ function testModuleNames(
         if (!completion) {
           expect(filteredCompletion.length).be.equal(0);
         } else {
+          console.log(
+            "filteredCompletion: ",
+            JSON.stringify(filteredCompletion),
+          );
+          expect(filteredCompletion.length).to.greaterThanOrEqual(1);
           expect(filteredCompletion[0].label).to.contain(completion);
           expect(filteredCompletion[0].textEdit?.newText).to.contain(
             completion,
