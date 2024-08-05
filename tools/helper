@@ -32,7 +32,7 @@ def cli():
     except subprocess.CalledProcessError as e:
         logging.error(e)
         logging.error(e.output)
-        result['stdout'] = f"v{datetime.now().day}.{datetime.now().month}.1-1-g39ab6c3"
+        result['stdout'] = f"v{datetime.now().strftime('%y')}.{datetime.now().month}.1-1-g39ab6c3"
     git_tag = result['stdout'].rstrip()
     logging.debug('git describe (with --match "v*.*") returned: %s', git_tag)
     tag, commits_since, suffix = git_tag.split("-", 2)
@@ -46,7 +46,7 @@ def cli():
         except subprocess.CalledProcessError as e:
             logging.error(e)
             logging.error(e.output)
-            result['stdout'] = f"v{datetime.now().year}.{datetime.now().month}.1-1-g39ab6c3"
+            result['stdout'] = f"v{datetime.now().strftime('%y')}.{datetime.now().month}.1-1-g39ab6c3"
         git_tag = result['stdout'].rstrip()
         logging.debug('git describe (with --match "v*.*.0") returned: %s', git_tag)
         tag, commits_since, suffix = git_tag.split("-", 2)
