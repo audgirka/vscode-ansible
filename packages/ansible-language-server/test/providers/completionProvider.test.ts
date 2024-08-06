@@ -254,7 +254,6 @@ function testModuleNames(
         if (!completion) {
           expect(filteredCompletion.length).be.equal(0);
         } else {
-          debugger;
           console.log(
             { actualCompletion },
             "filteredCompletion: ",
