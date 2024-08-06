@@ -255,7 +255,11 @@ function testModuleNames(
           expect(filteredCompletion.length).be.equal(0);
         } else {
           console.log(
-            { actualCompletion },
+            "actualCompletion: ",
+            JSON.stringify(actualCompletion),
+            actualCompletion.some((elm) =>
+              elm.label.includes(triggerCharacter),
+            ),
             "filteredCompletion: ",
             JSON.stringify(filteredCompletion),
           );

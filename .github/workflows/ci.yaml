@@ -90,8 +90,6 @@ jobs:
 
           - name: test (linux)
             task-name: test
-            # https://github.com/ansible/vscode-ansible/issues/1473
-            ignore-als-test-failure: true
 
           # - name: test (macos)
           #   task-name: test
@@ -257,16 +255,16 @@ jobs:
         if: "${{ contains(matrix.name, 'test') && !contains(matrix.name, 'wsl') }}"
         run: task ui ${{ matrix.env.TASKFILE_ARGS }}
 
+      - name: task als
+        if: contains(matrix.name, 'test')
+        # https://github.com/ansible/vscode-ansible/issues/1451
+        continue-on-error: ${{ matrix.ignore-als-test-failure || false }}
+        run: task als ${{ matrix.env.TASKFILE_ARGS }}
+
       - name: task e2e
         # https://github.com/ansible/vscode-ansible/issues/1451
         if: "${{ contains(matrix.name, 'test') && !contains(matrix.name, 'wsl') }}"
         run: task e2e ${{ matrix.env.TASKFILE_ARGS }}
-
-      - name: task als
-        # https://github.com/ansible/vscode-ansible/issues/1451
-        if: contains(matrix.name, 'test')
-        continue-on-error: ${{ matrix.ignore-als-test-failure || false }}
-        run: task als ${{ matrix.env.TASKFILE_ARGS }}
 
       - name: Upload vsix artifact
         if: ${{ matrix.name == 'test' }}
