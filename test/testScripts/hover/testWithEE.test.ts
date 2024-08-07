@@ -80,12 +80,16 @@ export function testHoverEE(): void {
           );
           console.log("coll_paths: ", typeof coll_paths, coll_paths);
 
+          const whoami = exec.spawn("whoami");
           const ansibleCommand = exec.spawn("ansible-galaxy", [
             "collection",
             "list",
             "-p",
             `${coll_paths ?? process.env.ANSIBLE_COLLECTIONS_PATHS}`,
           ]);
+          whoami.stdout.on("data", (data) =>
+            console.log("whoami: ", data.toString()),
+          );
           ansibleCommand.stdout.on("data", (data) => {
             console.log(`stdout: ` + data.toString());
           });
