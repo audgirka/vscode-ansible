@@ -257,8 +257,6 @@ jobs:
 
       - name: task als
         if: contains(matrix.name, 'test')
-        # https://github.com/ansible/vscode-ansible/issues/1451
-        continue-on-error: ${{ matrix.ignore-als-test-failure || false }}
         run: task als ${{ matrix.env.TASKFILE_ARGS }}
 
       - name: task e2e
@@ -269,7 +267,7 @@ jobs:
       - name: Setup tmate session
         if: contains(matrix.name, 'test (linux)')
         uses: mxschmitt/action-tmate@v3
-      
+
       - name: Upload vsix artifact
         if: ${{ matrix.name == 'test' }}
         uses: actions/upload-artifact@v4

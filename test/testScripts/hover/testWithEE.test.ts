@@ -5,7 +5,6 @@ import {
   testHover,
   setFixtureAnsibleCollectionPathEnv,
 } from "../../helper";
-import exec from "child_process";
 
 export function testHoverEE(): void {
   describe("TEST FOR HOVER (WITH EE)", () => {
