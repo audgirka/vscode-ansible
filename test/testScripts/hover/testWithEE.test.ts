@@ -17,6 +17,7 @@ export function testHoverEE(): void {
       setFixtureAnsibleCollectionPathEnv(
         "/home/runner/.ansible/collections:/usr/share/ansible/collections",
       );
+      await activate(docUri1);
     });
 
     describe("Hover for play keywords", () => {
@@ -71,18 +72,24 @@ export function testHoverEE(): void {
 
     describe("Hover for module name and options present in the EE", () => {
       it("should hover over collection module name present in EE (ansible.posix.patch)", async () => {
-        console.log("ansible-galaxy command:");
+        ((coll_paths: string | undefined) => {
+          console.log("ansible-galaxy command:");
+          console.log(
+            "ANSIBLE_COLLECTIONS_PATHS: ",
+            process.env.ANSIBLE_COLLECTIONS_PATHS,
+          );
+          console.log("coll_paths: ", typeof coll_paths, coll_paths);
 
-        const ansibleCommand = exec.spawn("ansible-galaxy", [
-          "collection",
-          "list",
-          "-p",
-          `${process.env.ANSIBLE_COLLECTIONS_PATHS}`,
-        ]);
-        ansibleCommand.stdout.on("data", (data) => {
-          console.log(`stdout: ` + data.toString());
-          console.log("Paths again: ", process.env.ANSIBLE_COLLECTIONS_PATHS);
-        });
+          const ansibleCommand = exec.spawn("ansible-galaxy", [
+            "collection",
+            "list",
+            "-p",
+            `${coll_paths ?? process.env.ANSIBLE_COLLECTIONS_PATHS}`,
+          ]);
+          ansibleCommand.stdout.on("data", (data) => {
+            console.log(`stdout: ` + data.toString());
+          });
+        })(process.env.ANSIBLE_COLLECTIONS_PATHS);
 
         await testHover(docUri1, new vscode.Position(9, 7), [
           {
