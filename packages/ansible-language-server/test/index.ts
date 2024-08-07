@@ -7,6 +7,9 @@ import pkg from "../../../package.json";
 const PRETEST_ERR_RC = 2;
 const SKIP_PODMAN = (process.env.SKIP_PODMAN ?? "0") === "1";
 const SKIP_DOCKER = (process.env.SKIP_DOCKER ?? "0") === "1";
+
+console.log({ SKIP_PODMAN, SKIP_DOCKER });
+
 let EE_VERSION = "N/A";
 const DEFAULT_CONTAINER =
   pkg?.contributes?.configuration[6]?.properties[
