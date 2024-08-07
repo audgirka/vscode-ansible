@@ -21,4 +21,4 @@ fi
 npx start-server-and-test \
     "TEST_LIGHTSPEED_URL=${TEST_LIGHTSPEED_URL} yarn mock-lightspeed-server --ui-test"\
     "${TEST_LIGHTSPEED_URL}" \
-    "TEST_LIGHTSPEED_ACCESS_TOKEN=dummy TEST_LIGHTSPEED_URL=${TEST_LIGHTSPEED_URL} yarn ${TEST_SCRIPT} --inspect"
+    "TEST_LIGHTSPEED_ACCESS_TOKEN=dummy TEST_LIGHTSPEED_URL=${TEST_LIGHTSPEED_URL} yarn ${TEST_SCRIPT}"

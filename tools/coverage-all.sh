@@ -15,4 +15,4 @@ fi
 npx start-server-and-test \
     "TEST_LIGHTSPEED_URL=${TEST_LIGHTSPEED_URL} yarn mock-lightspeed-server" \
     "${TEST_LIGHTSPEED_URL}" \
-    "TEST_LIGHTSPEED_ACCESS_TOKEN=dummy TEST_LIGHTSPEED_URL=${TEST_LIGHTSPEED_URL} yarn coverage-e2e --inspect"
+    "TEST_LIGHTSPEED_ACCESS_TOKEN=dummy TEST_LIGHTSPEED_URL=${TEST_LIGHTSPEED_URL} yarn coverage-e2e"
