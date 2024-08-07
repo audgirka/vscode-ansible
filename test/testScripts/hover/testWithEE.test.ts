@@ -70,18 +70,20 @@ export function testHoverEE(): void {
     });
 
     describe("Hover for module name and options present in the EE", () => {
-      console.log("ansible-galaxy command:");
-
-      const ansibleCommand = exec.spawn("ansible-galaxy", [
-        "collection",
-        "list",
-      ]);
-      ansibleCommand.stdout.on("data", (data) => {
-        console.log(`stdout: ` + data.toString());
-      });
-      console.log("Paths again: ", process.env.ANSIBLE_COLLECTIONS_PATHS);
-
       it("should hover over collection module name present in EE (ansible.posix.patch)", async () => {
+        console.log("ansible-galaxy command:");
+
+        const ansibleCommand = exec.spawn("ansible-galaxy", [
+          "collection",
+          "list",
+          "-p",
+          `${process.env.ANSIBLE_COLLECTIONS_PATHS}`,
+        ]);
+        ansibleCommand.stdout.on("data", (data) => {
+          console.log(`stdout: ` + data.toString());
+          console.log("Paths again: ", process.env.ANSIBLE_COLLECTIONS_PATHS);
+        });
+
         await testHover(docUri1, new vscode.Position(9, 7), [
           {
             contents: ["GNU patch"],

@@ -753,7 +753,7 @@ describe("doCompletion()", () => {
       describe("With EE enabled @ee", () => {
         before(async () => {
           setFixtureAnsibleCollectionPathEnv(
-            "/home/runner/.ansible/collections:/usr/share/ansible",
+            "/home/runner/.ansible/collections:/usr/share/ansible/collections",
           );
           await enableExecutionEnvironmentSettings(docSettings);
         });
@@ -785,7 +785,7 @@ describe("doCompletion()", () => {
       describe("With EE enabled @ee", () => {
         before(async () => {
           setFixtureAnsibleCollectionPathEnv(
-            "/home/runner/.ansible/collections:/usr/share/ansible",
+            "/home/runner/.ansible/collections:/usr/share/ansible/collections",
           );
           await enableExecutionEnvironmentSettings(docSettings);
         });
@@ -821,7 +821,7 @@ describe("doCompletion()", () => {
       describe("With EE enabled @ee", () => {
         before(async () => {
           setFixtureAnsibleCollectionPathEnv(
-            "/home/runner/.ansible/collections:/usr/share/ansible",
+            "/home/runner/.ansible/collections:/usr/share/ansible/collections",
           );
           await enableExecutionEnvironmentSettings(docSettings);
         });
@@ -855,7 +855,7 @@ describe("doCompletion()", () => {
       describe("With EE enabled @ee", () => {
         before(async () => {
           setFixtureAnsibleCollectionPathEnv(
-            "/home/runner/.ansible/collections:/usr/share/ansible",
+            "/home/runner/.ansible/collections:/usr/share/ansible/collections",
           );
           await enableExecutionEnvironmentSettings(docSettings);
         });
@@ -890,7 +890,7 @@ describe("doCompletion()", () => {
       describe("With EE enabled @ee", () => {
         before(async () => {
           setFixtureAnsibleCollectionPathEnv(
-            "/home/runner/.ansible/collections:/usr/share/ansible",
+            "/home/runner/.ansible/collections:/usr/share/ansible/collections",
           );
           await enableExecutionEnvironmentSettings(docSettings);
         });
@@ -916,7 +916,7 @@ describe("doCompletion()", () => {
       describe("With EE enabled @ee", () => {
         before(async () => {
           setFixtureAnsibleCollectionPathEnv(
-            "/home/runner/.ansible/collections:/usr/share/ansible",
+            "/home/runner/.ansible/collections:/usr/share/ansible/collections",
           );
           await enableExecutionEnvironmentSettings(docSettings);
         });
@@ -943,7 +943,7 @@ describe("doCompletion()", () => {
       describe("With EE enabled @ee", () => {
         before(async () => {
           setFixtureAnsibleCollectionPathEnv(
-            "/home/runner/.ansible/collections:/usr/share/ansible",
+            "/home/runner/.ansible/collections:/usr/share/ansible/collections",
           );
           await enableExecutionEnvironmentSettings(docSettings);
         });
@@ -970,7 +970,7 @@ describe("doCompletion()", () => {
       describe("With EE enabled @ee", () => {
         before(async () => {
           setFixtureAnsibleCollectionPathEnv(
-            "/home/runner/.ansible/collections:/usr/share/ansible",
+            "/home/runner/.ansible/collections:/usr/share/ansible/collections",
           );
           await enableExecutionEnvironmentSettings(docSettings);
         });
@@ -997,7 +997,7 @@ describe("doCompletion()", () => {
       describe("With EE enabled @ee", () => {
         before(async () => {
           setFixtureAnsibleCollectionPathEnv(
-            "/home/runner/.ansible/collections:/usr/share/ansible",
+            "/home/runner/.ansible/collections:/usr/share/ansible/collections",
           );
           await enableExecutionEnvironmentSettings(docSettings);
         });
@@ -1032,7 +1032,7 @@ describe("doCompletion()", () => {
       describe("With EE enabled @ee", () => {
         before(async () => {
           setFixtureAnsibleCollectionPathEnv(
-            "/home/runner/.ansible/collections:/usr/share/ansible",
+            "/home/runner/.ansible/collections:/usr/share/ansible/collections",
           );
           await enableExecutionEnvironmentSettings(docSettings);
         });
@@ -1067,7 +1067,7 @@ describe("doCompletion()", () => {
         describe("With EE enabled @ee", () => {
           before(async () => {
             setFixtureAnsibleCollectionPathEnv(
-              "/home/runner/.ansible/collections:/usr/share/ansible",
+              "/home/runner/.ansible/collections:/usr/share/ansible/collections",
             );
             await enableExecutionEnvironmentSettings(docSettings);
           });
@@ -1103,7 +1103,7 @@ describe("doCompletion()", () => {
       describe("With EE enabled @ee", () => {
         before(async () => {
           setFixtureAnsibleCollectionPathEnv(
-            "/home/runner/.ansible/collections:/usr/share/ansible",
+            "/home/runner/.ansible/collections:/usr/share/ansible/collections",
           );
           await enableExecutionEnvironmentSettings(docSettings);
         });
@@ -1139,7 +1139,7 @@ describe("doCompletion()", () => {
       describe("With EE enabled @ee", () => {
         before(async () => {
           setFixtureAnsibleCollectionPathEnv(
-            "/home/runner/.ansible/collections:/usr/share/ansible",
+            "/home/runner/.ansible/collections:/usr/share/ansible/collections",
           );
           await enableExecutionEnvironmentSettings(docSettings);
         });
