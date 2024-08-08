@@ -16,6 +16,7 @@ export function testHoverEE(): void {
       setFixtureAnsibleCollectionPathEnv(
         "/home/runner/.ansible/collections:/usr/share/ansible/collections",
       );
+      await activate(docUri1);
     });
 
     describe("Hover for play keywords", () => {
