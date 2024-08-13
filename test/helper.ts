@@ -115,7 +115,7 @@ export async function enableExecutionEnvironmentSettings(): Promise<void> {
     {
       src: ANSIBLE_COLLECTIONS_FIXTURES_BASE_PATH,
       dest: ANSIBLE_COLLECTIONS_FIXTURES_BASE_PATH,
-      options: "ro",
+      options: "ro", // read-only option for volume mounts
     },
   ];
   await updateSettings("executionEnvironment.volumeMounts", volumeMounts);

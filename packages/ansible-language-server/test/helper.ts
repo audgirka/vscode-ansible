@@ -58,12 +58,12 @@ export async function enableExecutionEnvironmentSettings(
     {
       src: ANSIBLE_COLLECTIONS_FIXTURES_BASE_PATH,
       dest: ANSIBLE_COLLECTIONS_FIXTURES_BASE_PATH,
-      options: "ro",
+      options: "ro", // read-only option for volume mounts
     },
     {
       src: ANSIBLE_ADJACENT_COLLECTIONS__PATH,
       dest: ANSIBLE_ADJACENT_COLLECTIONS__PATH,
-      options: undefined,
+      options: "ro", // read-only option for volume mounts
     },
   ];
 }
