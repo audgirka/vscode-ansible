@@ -8,5 +8,8 @@
     "url": "the repositories url"
   },
   "author": "your name",
-  "license": "N/A"
+  "license": "N/A",
+  "dependencies": {
+    "@ansible/ansible-language-server": "file:../../@ansible-ansible-language-server-1.2.3.tgz"
+  }
 }
