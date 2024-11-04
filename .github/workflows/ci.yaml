@@ -254,6 +254,10 @@ jobs:
         if: "${{ !contains(matrix.name, 'test') }}"
         run: task ${{ matrix.task-name }} ${{ matrix.env.TASKFILE_ARGS }}
 
+      - name: ⚙️ Allow unprivileged user namespace (ubuntu)
+        if: ${{ startsWith(matrix.os, 'ubuntu') }}
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+
       - name: task unit
         if: contains(matrix.name, 'test')
         run: task unit ${{ matrix.env.TASKFILE_ARGS }}
