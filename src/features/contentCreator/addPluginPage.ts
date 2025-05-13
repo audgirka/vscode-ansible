@@ -138,9 +138,11 @@ export class AddPlugin {
                       <span class="normal">Plugin type *</span>
                     </vscode-label>
                     <vscode-single-select id="plugin-dropdown">
-                      <vscode-option>filter</vscode-option>
-                      <vscode-option>lookup</vscode-option>
-                      <vscode-option>action</vscode-option>
+                      <vscode-option>Action</vscode-option>
+                      <vscode-option>Filter</vscode-option>
+                      <vscode-option>Lookup</vscode-option>
+                      <vscode-option>Module</vscode-option>
+                      <vscode-option>Test</vscode-option>
                     </vscode-single-select>
                   </div>
                 </div>
@@ -313,7 +315,7 @@ export class AddPlugin {
 
     let ansibleCreatorAddCommand = await this.getCreatorCommand(
       pluginName,
-      pluginType,
+      pluginType.toLowerCase(),
       destinationPathUrl,
     );
 
@@ -357,6 +359,8 @@ export class AddPlugin {
       lookup: "24.12.1",
       filter: "24.12.1",
       action: "25.0.0",
+      module: "25.3.1",
+      test: "25.3.1",
     };
     const requiredCreatorVersion =
       minRequiredCreatorVersion[pluginType.toLowerCase()];
@@ -383,16 +387,6 @@ export class AddPlugin {
         status: commandResult,
       },
     } as PostMessageEvent);
-
-    if (commandResult === "passed") {
-      const selection = await vscode.window.showInformationMessage(
-        `${pluginType} plugin '${pluginName}' added at: ${destinationPathUrl}/plugins`,
-        `Open plugin file ↗`,
-      );
-      if (selection === "Open plugin file ↗") {
-        this.openFolderInWorkspace(destinationPathUrl, pluginName, pluginType);
-      }
-    }
   }
 
   public async openFolderInWorkspace(
@@ -401,9 +395,6 @@ export class AddPlugin {
     pluginType: string,
   ) {
     const folderUri = vscode.Uri.parse(expandPath(folderUrl));
-
-    // add folder to a new workspace
-    // vscode.workspace.updateWorkspaceFolders(0, 1, { uri: folderUri });
 
     if (vscode.workspace.workspaceFolders?.length === 0) {
       vscode.workspace.updateWorkspaceFolders(0, null, { uri: folderUri });
@@ -414,7 +405,11 @@ export class AddPlugin {
     }
 
     // open the plugin file in the editor
-    const pluginFileUrl = `${folderUrl}/plugins/${pluginType}/${pluginName}.py`;
+    const pluginTypeDir =
+      pluginType.toLowerCase() === "module"
+        ? "modules"
+        : pluginType.toLowerCase();
+    const pluginFileUrl = `${folderUrl}/plugins/${pluginTypeDir}/${pluginName}.py`;
     console.log(`[ansible-creator] Plugin file url: ${pluginFileUrl}`);
     const parsedUrl = vscode.Uri.parse(`vscode://file${pluginFileUrl}`);
     console.log(`[ansible-creator] Parsed galaxy file url: ${parsedUrl}`);

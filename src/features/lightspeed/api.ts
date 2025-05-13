@@ -9,14 +9,17 @@ import {
   ExplanationResponseParams,
   FeedbackRequestParams,
   FeedbackResponseParams,
-  GenerationRequestParams,
+  PlaybookGenerationRequestParams,
+  RoleGenerationRequestParams,
   PlaybookGenerationResponseParams,
   RoleGenerationResponseParams,
+  RoleExplanationRequestParams,
 } from "../../interfaces/lightspeed";
 import {
   LIGHTSPEED_PLAYBOOK_EXPLANATION_URL,
   LIGHTSPEED_PLAYBOOK_GENERATION_URL,
   LIGHTSPEED_ROLE_GENERATION_URL,
+  LIGHTSPEED_ROLE_EXPLANATION_URL,
   LIGHTSPEED_SUGGESTION_COMPLETION_URL,
   LIGHTSPEED_SUGGESTION_CONTENT_MATCHES_URL,
   LIGHTSPEED_SUGGESTION_FEEDBACK_URL,
@@ -33,6 +36,7 @@ import {
   OneClickTrialProvider,
 } from "./utils/oneClickTrial";
 import { mapError } from "./handleApiError";
+import { Log } from "../../utils/logger";
 
 const UNKNOWN_ERROR: string = "An unknown error occurred.";
 
@@ -50,17 +54,20 @@ export class LightSpeedAPI {
   private _suggestionFeedbacks: string[];
   private _extensionVersion: string;
   private _oneClickTrialProvider: OneClickTrialProvider;
+  private logger: Log;
 
   constructor(
     settingsManager: SettingsManager,
     lightspeedAuthenticatedUser: LightspeedUser,
     context: vscode.ExtensionContext,
+    logger: Log,
   ) {
     this.settingsManager = settingsManager;
     this.lightspeedAuthenticatedUser = lightspeedAuthenticatedUser;
     this._suggestionFeedbacks = [];
     this._extensionVersion = context.extension.packageJSON.version;
     this._oneClickTrialProvider = getOneClickTrialProvider();
+    this.logger = logger;
   }
 
   private async lightspeedPost(endpoint: string, body: string) {
@@ -96,7 +103,7 @@ export class LightSpeedAPI {
     inputData: CompletionRequestParams,
   ): Promise<CompletionResponseParams> {
     const suggestionId = inputData.suggestionId;
-    console.log(
+    this.logger.info(
       `[ansible-lightspeed] Completion request sent to lightspeed: ${JSON.stringify(
         inputData,
       )}`,
@@ -136,7 +143,7 @@ export class LightSpeedAPI {
         );
         return {} as CompletionResponseParams;
       }
-      console.log(
+      this.logger.debug(
         `[ansible-lightspeed] Completion response: ${JSON.stringify(data)}`,
       );
       return data;
@@ -187,15 +194,13 @@ export class LightSpeedAPI {
       return {} as FeedbackResponseParams;
     }
 
-    const rhUserHasSeat =
-      await this.lightspeedAuthenticatedUser.rhUserHasSeat();
     const orgOptOutTelemetry =
       await this.lightspeedAuthenticatedUser.orgOptOutTelemetry();
 
     inputData.model =
       lightSpeedManager.settingsManager.settings.lightSpeedService.model;
 
-    if (rhUserHasSeat && orgOptOutTelemetry) {
+    if (orgOptOutTelemetry) {
       if (inputData.inlineSuggestion) {
         delete inputData.inlineSuggestion;
       }
@@ -208,7 +213,7 @@ export class LightSpeedAPI {
       ...inputData,
       metadata: { ansibleExtensionVersion: this._extensionVersion },
     };
-    console.log(
+    this.logger.debug(
       `[ansible-lightspeed] Feedback request sent to lightspeed: ${JSON.stringify(
         requestData,
       )}`,
@@ -259,7 +264,7 @@ export class LightSpeedAPI {
         metadata: { ansibleExtensionVersion: this._extensionVersion },
       };
 
-      console.log(
+      this.logger.debug(
         `[ansible-lightspeed] Content Match request sent to lightspeed: ${JSON.stringify(
           requestData,
         )}`,
@@ -292,8 +297,8 @@ export class LightSpeedAPI {
         metadata: { ansibleExtensionVersion: this._extensionVersion },
       };
 
-      console.log(
-        `[ansible-lightspeed] Explanation request sent to lightspeed: ${JSON.stringify(
+      this.logger.info(
+        `[ansible-lightspeed] Playbook Explanation request sent to lightspeed: ${JSON.stringify(
           requestData,
         )}`,
       );
@@ -317,7 +322,7 @@ export class LightSpeedAPI {
   }
 
   public async playbookGenerationRequest(
-    inputData: GenerationRequestParams,
+    inputData: PlaybookGenerationRequestParams,
   ): Promise<PlaybookGenerationResponseParams | IError> {
     try {
       const requestData = {
@@ -325,8 +330,8 @@ export class LightSpeedAPI {
         metadata: { ansibleExtensionVersion: this._extensionVersion },
       };
 
-      console.log(
-        `[ansible-lightspeed] Generation request sent to lightspeed: ${JSON.stringify(
+      this.logger.info(
+        `[ansible-lightspeed] Playbook generation request sent to lightspeed: ${JSON.stringify(
           requestData,
         )}`,
       );
@@ -350,20 +355,58 @@ export class LightSpeedAPI {
   }
 
   public async roleGenerationRequest(
-    inputData: GenerationRequestParams,
+    inputData: RoleGenerationRequestParams,
   ): Promise<RoleGenerationResponseParams | IError> {
     try {
       const requestData = {
         ...inputData,
         metadata: { ansibleExtensionVersion: this._extensionVersion },
       };
-      console.log(
+      this.logger.info(
         `[ansible-lightspeed] Role Generation request sent to lightspeed: ${JSON.stringify(
           requestData,
         )}`,
       );
       const response = await this.lightspeedPost(
         LIGHTSPEED_ROLE_GENERATION_URL,
+        JSON.stringify(requestData),
+      );
+
+      const data = await response.json();
+
+      // to remove after roleGen GA
+      if (data.role && !data.name) {
+        data.name = data.role;
+      }
+
+      if (!response.ok) {
+        throw new HTTPError(response, response.status, data);
+      }
+
+      return data;
+    } catch (error) {
+      const mappedError: IError = mapError(error as Error);
+      return mappedError;
+    }
+  }
+
+  public async roleExplanationRequest(
+    inputData: RoleExplanationRequestParams,
+  ): Promise<ExplanationResponseParams | IError> {
+    try {
+      const requestData = {
+        ...inputData,
+        metadata: { ansibleExtensionVersion: this._extensionVersion },
+      };
+
+      this.logger.info(
+        `[ansible-lightspeed] Role Explanation request sent to lightspeed: ${JSON.stringify(
+          requestData,
+        )}`,
+      );
+
+      const response = await this.lightspeedPost(
+        LIGHTSPEED_ROLE_EXPLANATION_URL,
         JSON.stringify(requestData),
       );
 

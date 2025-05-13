@@ -14,7 +14,7 @@ import {
 } from "./utils/explorerView";
 import { LightspeedUser } from "./lightspeedUser";
 
-import { isPlaybook } from "./playbookExplanation";
+import { isPlaybook, isDocumentInRole } from "./utils/explanationUtils";
 
 export class LightspeedExplorerWebviewViewProvider
   implements WebviewViewProvider
@@ -77,6 +77,7 @@ export class LightspeedExplorerWebviewViewProvider
         extensionUri,
         String(content),
         this.hasPlaybookOpened(),
+        await this.hasRoleOpened(),
       );
     } else {
       return getWebviewContentWithLoginForm(webview, extensionUri);
@@ -88,6 +89,18 @@ export class LightspeedExplorerWebviewViewProvider
     if (document !== undefined && document.languageId === "ansible") {
       try {
         return isPlaybook(document.getText());
+      } catch {
+        return false;
+      }
+    }
+    return false;
+  }
+
+  private async hasRoleOpened() {
+    const document = window.activeTextEditor?.document;
+    if (document !== undefined) {
+      try {
+        return await isDocumentInRole(document);
       } catch {
         return false;
       }

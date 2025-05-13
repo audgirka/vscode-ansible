@@ -5,11 +5,12 @@ ignores:
   - "@types/vscode"
   - "@types/vscode-webview" # provides VSCodeAPI
   - "@vscode/vsce"
+  - "@vscode/test-electron" # used by @vscode/test-cli
   - depcheck
   - eslint-formatter-gha
   - eslint-formatter-unix
-  - mochawesome
-  - mochawesome-report-generator
+  - mocha-junit-reporter
+  - npm-check-updates
   - ovsx
   - rimraf
   - start-server-and-test

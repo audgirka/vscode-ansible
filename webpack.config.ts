@@ -1,30 +1,29 @@
-"use strict";
 import WarningsToErrorsPlugin from "warnings-to-errors-webpack-plugin";
 
 import path from "path";
 const webpack = require("webpack");
 
 type EntryType = {
-  client?: string;
   server?: string;
-  // YAML syntax highlighter needs to be bundled with language/theme files at build
-  syntaxHighlighter: string;
 };
 
 const entry: EntryType = {
-  client: "./src/extension.ts",
   server: "./packages/ansible-language-server/src/server.ts",
-  syntaxHighlighter: "./src/features/utils/syntaxHighlighter.ts",
 };
 
 const config = {
+  cache: {
+    type: "filesystem",
+    buildDependencies: {
+      config: [__filename],
+    },
+  },
   devtool: "source-map",
   entry,
   externals: {
     vscode: "commonjs vscode", // the vscode-module is created on-the-fly and must be excluded. Add other modules that cannot be webpack'ed
     shiki: "shiki",
   },
-  mode: "none",
   module: {
     rules: [
       {
@@ -163,45 +162,6 @@ const playbookExplorerWebviewConfig = {
   },
 };
 
-const playbookGenerationWebviewConfig = {
-  ...config,
-  target: ["web", "es2020"],
-  entry: "./src/webview/apps/lightspeed/playbookGeneration/main.ts",
-  experiments: { outputModule: true },
-  output: {
-    path: path.resolve(__dirname, "out"),
-    filename: "./client/webview/apps/lightspeed/playbookGeneration/main.js",
-    libraryTarget: "module",
-    chunkFormat: "module",
-  },
-};
-
-const playbookExplanationWebviewConfig = {
-  ...config,
-  target: ["web", "es2020"],
-  entry: "./src/webview/apps/lightspeed/playbookExplanation/main.ts",
-  experiments: { outputModule: true },
-  output: {
-    path: path.resolve(__dirname, "out"),
-    filename: "./client/webview/apps/lightspeed/playbookExplanation/main.js",
-    libraryTarget: "module",
-    chunkFormat: "module",
-  },
-};
-
-const roleGenerationWebviewConfig = {
-  ...config,
-  target: ["web", "es2020"],
-  entry: "./src/webview/apps/lightspeed/roleGeneration/main.ts",
-  experiments: { outputModule: true },
-  output: {
-    path: path.resolve(__dirname, "out"),
-    filename: "./client/webview/apps/lightspeed/roleGeneration/main.js",
-    libraryTarget: "module",
-    chunkFormat: "module",
-  },
-};
-
 const createAnsibleCollectionWebviewConfig = {
   ...config,
   target: ["web", "es2020"],
@@ -284,11 +244,23 @@ const addPluginWebviewConfig = {
   },
 };
 
+const createRoleWebviewConfig = {
+  ...config,
+  target: ["web", "es2020"],
+  entry: "./src/webview/apps/contentCreator/createRolePageApp.ts",
+  experiments: { outputModule: true },
+  output: {
+    path: path.resolve(__dirname, "out"),
+    filename: "./client/webview/apps/contentCreator/createRolePageApp.js",
+    libraryTarget: "module",
+    chunkFormat: "module",
+  },
+};
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 module.exports = (_env: any, argv: { mode: string }) => {
   // Use non-bundled js for client/server in dev environment
   if (argv.mode === "development") {
-    delete config.entry.client;
     delete config.entry.server;
   }
   return [
@@ -297,13 +269,11 @@ module.exports = (_env: any, argv: { mode: string }) => {
     contentCreatorMenuWebviewConfig,
     createAnsibleCollectionWebviewConfig,
     playbookExplorerWebviewConfig,
-    playbookGenerationWebviewConfig,
-    playbookExplanationWebviewConfig,
-    roleGenerationWebviewConfig,
     createAnsibleProjectWebviewConfig,
     createDevfileWebviewConfig,
     createDevcontainerWebviewConfig,
     addPluginWebviewConfig,
+    createRoleWebviewConfig,
     quickLinksWebviewConfig,
     createExecutionEnvWebviewConfig,
   ];

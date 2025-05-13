@@ -36,6 +36,7 @@ export type AnsibleExecutionEnvInterface = {
   isOverwritten: boolean;
   isCreateContextEnabled: boolean;
   isBuildImageEnabled: boolean;
+  isInitEEProjectEnabled: boolean;
   baseImage: string;
   customBaseImage: string;
   collections: string;
@@ -53,6 +54,13 @@ export type DevcontainerFormInterface = {
 export type PluginFormInterface = {
   pluginName: string;
   pluginType: string;
+  collectionPath: string;
+  verbosity: string;
+  isOverwritten: boolean;
+};
+
+export type RoleFormInterface = {
+  roleName: string;
   collectionPath: string;
   verbosity: string;
   isOverwritten: boolean;
